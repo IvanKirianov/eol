@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "eol-alert.fullname" . }}-deployment
+  labels:
+    {{ include "eol-alert.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{ include "eol-alert.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{ include "eol-alert.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "eol-alert.fullname" . }}-sa
+      containers:
+        - name: public-repo-scanner
+          image: "{{ .Values.publicRepoScanner.image.repository }}:{{ .Values.publicRepoScanner.image.tag }}"
+          imagePullPolicy: {{ .Values.publicRepoScanner.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.publicRepoScanner.port }}
+          env:
+            - name: ENDPOINTS
+              value: |
+                {{ toJson .Values.endpoints | indent 4 }}
+      restartPolicy: Always

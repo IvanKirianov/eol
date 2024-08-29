@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "eol-alert.fullname" . }}-config
+  labels:
+    {{ include "eol-alert.labels" . | nindent 4 }}
+data:
+  config.yaml: |-
+    endpoints:
+      {{- toYaml .Values.endpoints | nindent 4 }}

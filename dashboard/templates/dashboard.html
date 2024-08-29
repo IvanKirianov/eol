@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Public Repo Scanner Dashboard</h1>
+    <h2>Public Repo Scanner Data</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Application</th>
+                <th>Public Available Version</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app_name, info in public_repo_data.items() %}
+                <tr>
+                    <td>{{ app_name }}</td>
+                    <td>{{ info.version if 'version' in info else 'No public available version data' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

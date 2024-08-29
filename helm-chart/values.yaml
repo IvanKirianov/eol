@@ -1,0 +1,38 @@
+replicaCount: 1
+
+image:
+  repository: "kiryanovi/combined-scanner"
+  tag: "latest"
+  pullPolicy: "IfNotPresent"
+
+service:
+  port: 5001
+
+publicRepoScanner:
+  image:
+    repository: "kiryanovi/public-repo-scanner"
+    tag: "latest"
+    pullPolicy: "IfNotPresent"
+  port: 5001
+
+k8sScanner:
+  image:
+    repository: "kiryanovi/k8s-scanner"
+    tag: "latest"
+    pullPolicy: "IfNotPresent"
+  port: 5002
+
+endpoints:
+  cert-manager: "https://endoflife.date/api/cert-manager.json"
+  cilium: "https://github.com/cilium/cilium/releases/latest"
+  eks: "https://endoflife.date/api/amazon-eks.json"
+  grafana: "https://endoflife.date/api/grafana.json"
+  karpenter: "https://github.com/aws/karpenter-provider-aws/releases/latest"
+  keda: "https://github.com/kedacore/keda/releases/latest"
+  kyverno: "https://endoflife.date/api/kyverno.json"
+  metrics-server: "https://github.com/kubernetes-sigs/metrics-server/releases/latest"
+  nginx-ingress: "https://github.com/nginxinc/nginx-ingress-controller/releases/latest"
+  secrets-store-csi-driver-provider-aws: "https://github.com/aws/secrets-store-csi-driver-provider-aws/releases/latest"
+  terraform: "https://endoflife.date/api/terraform.json"
+
+resources: {}
