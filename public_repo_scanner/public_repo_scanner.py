@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 import requests
-from endpoints import ENDPOINTS
+from .endpoints import ENDPOINTS
 
 app = Flask(__name__)
 
