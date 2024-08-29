@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: k8s-scanner
+  labels:
+    app.kubernetes.io/name: k8s-scanner
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: k8s-scanner
+        spec:
+          serviceAccountName: {{ include "eol-alert.fullname" . }}-sa
+          containers:
+            - name: k8s-scanner
+              image: "kiryanovi/k8s-scanner:latest"
+              imagePullPolicy: IfNotPresent
+              ports:
+                - containerPort: 5002
+          restartPolicy: OnFailure
