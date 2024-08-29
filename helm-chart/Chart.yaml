@@ -1,4 +1,0 @@
-apiVersion: v2
-name: eol-alert
-description: A Helm chart for Kubernetes monitoring
-version: 0.1.0
