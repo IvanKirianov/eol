@@ -3,7 +3,8 @@
 import unittest
 from unittest.mock import patch, Mock
 import requests
-from public_repo_scanner import get_latest_record, get_latest_release, app
+from public_repo_scanner.public_repo_scanner import get_latest_record, get_latest_release, app
+
 
 class TestPublicRepoScanner(unittest.TestCase):
 
