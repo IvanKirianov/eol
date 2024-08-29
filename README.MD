@@ -75,10 +75,15 @@ python3 dashboard/dashboard.py
 
 ### API Endpoints
 ## Public Repo Scanner
+```bash
 Root Endpoint: GET /: Lists all available endpoints.
+```
+```bash
 Application Data: GET /api/<app_name>: Fetches the latest version or record for the specified application.
+```
+```bash
 Merged Data: GET /api/merged: Fetches and returns the latest version or record for all applications combined into one JSON.
-
+```
 ## Dashboard
 View the dashboard at http://localhost:8888 to see the aggregated version data.
 
