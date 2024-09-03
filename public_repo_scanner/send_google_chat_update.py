@@ -7,8 +7,8 @@ def fetch_merged_data():
     """Fetches merged data from the API."""
     try:
         response = requests.get('http://localhost:5001/api/merged')
-        response.raise_for_status()
-        return response.json()
+        response.raise_for_status()  # Ensure we raise an error for bad responses
+        return response.json()  # Parse the response as JSON
     except requests.exceptions.RequestException as e:
         print(f"Error fetching merged data: {e}")
         return None
@@ -22,8 +22,8 @@ def format_message(data):
         version = item.get("version", "")
         cycle = item.get("cycle", "")
 
-        # Format the version and cycle output
-        version_output = f"{version}".lstrip('v') if version else ""
+        # Clean up the version and cycle data
+        version_output = version.lstrip('v') if version else ""
         cycle_output = f"({cycle})" if cycle and cycle.isdigit() else ""
 
         # Combine version and cycle
@@ -45,7 +45,7 @@ def send_message_to_google_chat(message):
     }
     try:
         response = requests.post(WEBHOOK_URL, headers=headers, data=json.dumps(message))
-        response.raise_for_status()
+        response.raise_for_status()  # Ensure we raise an error for bad responses
         print("Message sent successfully.")
     except requests.exceptions.RequestException as e:
         print(f"Error sending message to Google Chat: {e}")
