@@ -18,21 +18,24 @@ def format_message(data):
     message = "*Dependency Update*\n\n"
 
     for item in data:
-        name = item.get("name", "Unknown")
-        version = item.get("version", "")
-        cycle = item.get("cycle", "")
+        if isinstance(item, dict):  # Ensure item is a dictionary
+            name = item.get("name", "Unknown")
+            version = item.get("version", "")
+            cycle = item.get("cycle", "")
 
-        # Clean up the version and cycle data
-        version_output = version.lstrip('v') if version else ""
-        cycle_output = f"({cycle})" if cycle and cycle.isdigit() else ""
+            # Clean up the version and cycle data
+            version_output = version.lstrip('v') if version else ""
+            cycle_output = f"({cycle})" if cycle and cycle.isdigit() else ""
 
-        # Combine version and cycle
-        formatted_output = f"{version_output} {cycle_output}".strip()
+            # Combine version and cycle
+            formatted_output = f"{version_output} {cycle_output}".strip()
 
-        if formatted_output:
-            message += f"*{name}*: {formatted_output}\n"
+            if formatted_output:
+                message += f"*{name}*: {formatted_output}\n"
+            else:
+                message += f"*{name}*: No data available\n"
         else:
-            message += f"*{name}*: No data available\n"
+            print(f"Unexpected data format: {item}")
 
     return {
         "text": message
@@ -54,8 +57,13 @@ def main():
     """Main function to fetch merged data and send the Google Chat message."""
     merged_data = fetch_merged_data()
     if merged_data:
-        formatted_message = format_message(merged_data)
-        send_message_to_google_chat(formatted_message)
+        if isinstance(merged_data, list):  # Ensure the fetched data is a list
+            formatted_message = format_message(merged_data)
+            send_message_to_google_chat(formatted_message)
+        else:
+            print("Unexpected data format from API.")
+    else:
+        print("Failed to retrieve merged data.")
 
 if __name__ == "__main__":
     main()
