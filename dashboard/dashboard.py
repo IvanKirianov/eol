@@ -3,30 +3,52 @@ import requests
 
 app = Flask(__name__)
 
-PUBLIC_REPO_SCANNER_URL = 'http://localhost:5001/api/merged'
+PUBLIC_REPO_API_URL = "http://localhost:5001/api/merged"
 
 def fetch_public_repo_data():
-    """Fetch data from public_repo_scanner API and return as a dictionary."""
     try:
-        response = requests.get(PUBLIC_REPO_SCANNER_URL)
+        response = requests.get(PUBLIC_REPO_API_URL)
         response.raise_for_status()
         data = response.json()
 
-        result = {}
+        formatted_data = {}
         for app_name, details in data.items():
-            version = details.get('version', 'No public available version data')
-            cycle = details.get('cycle', '')
-            result[app_name] = f"{version} (Cycle: {cycle})"
-        return result
+            print(f"Raw Data for {app_name}: {details}")  # Debugging output
+
+            # Extract version and latest values
+            version = details.get("version", "").replace("v", "").strip()
+            latest = details.get("latest", "").replace("v", "").strip()
+
+            # Use 'latest' if 'version' is not available
+            display_value = version if version else latest
+
+            # Only display numeric cycle values
+            cycle = details.get("cycle", "").strip()
+            if not cycle.isdigit():
+                cycle = ""
+
+            # Display the version if available; otherwise, use the cycle
+            if display_value:
+                formatted_data[app_name] = display_value
+            elif cycle:
+                formatted_data[app_name] = cycle
+            else:
+                formatted_data[app_name] = ""
+
+            print(f"Formatted Data for {app_name}: {formatted_data[app_name]}")  # Debugging output
+
+        print(f"Final formatted data: {formatted_data}")  # Debugging output of all data
+        return formatted_data
 
     except requests.exceptions.RequestException as e:
-        return {"error": str(e)}
+        print(f"Error fetching data: {e}")
+        return {}
 
 @app.route('/')
 def index():
-    """Render the dashboard HTML with the data from the public_repo_scanner API."""
-    data = fetch_public_repo_data()
-    return render_template('dashboard.html', data=data)
+    public_repo_data = fetch_public_repo_data()
+    print(f"Data sent to template: {public_repo_data}")  # Debugging output
+    return render_template('dashboard.html', public_repo_data=public_repo_data)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8888, debug=True)

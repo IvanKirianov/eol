@@ -4,7 +4,7 @@ ENDPOINTS = {
         "description": "Cert-Manager"
     },
     "cilium": {
-        "url": "https://github.com/cilium/cilium/releases/latest",
+        "url": "https://api.github.com/repos/cilium/cilium/releases/latest",
         "description": "Cilium"
     },
     "eks": {
@@ -16,11 +16,11 @@ ENDPOINTS = {
         "description": "Grafana"
     },
     "karpenter": {
-        "url": "https://github.com/aws/karpenter-provider-aws/releases/latest",
+        "url": "https://api.github.com/repos/aws/karpenter-provider-aws/releases/latest",
         "description": "Karpenter"
     },
     "keda": {
-        "url": "https://github.com/kedacore/keda/releases/latest",
+        "url": "https://api.github.com/repos/kedacore/keda/releases/latest",
         "description": "KEDA"
     },
     "kyverno": {
@@ -28,19 +28,23 @@ ENDPOINTS = {
         "description": "Kyverno"
     },
     "metrics-server": {
-        "url": "https://github.com/kubernetes-sigs/metrics-server/releases/latest",
+        "url": "https://api.github.com/repos/kubernetes-sigs/metrics-server/releases/latest",
         "description": "Metrics Server"
     },
     "nginx-ingress": {
-        "url": "https://github.com/nginxinc/nginx-ingress-controller/releases/latest",
+        "url": "https://api.github.com/repos/kubernetes/ingress-nginx/releases/latest",
         "description": "Nginx Ingress Controller"
     },
     "secrets-store-csi-driver-provider-aws": {
-        "url": "https://github.com/aws/secrets-store-csi-driver-provider-aws/releases/latest",
+        "url": "https://api.github.com/repos/aws/secrets-store-csi-driver-provider-aws/releases/latest",
         "description": "Secrets Store CSI Driver Provider AWS"
     },
     "terraform": {
         "url": "https://endoflife.date/api/terraform.json",
         "description": "Terraform"
+    },
+    "terraform-cloud-agent": {
+        "url": "https://releases.hashicorp.com/tfc-agent",
+        "description": "Terraform Cloud Agent"
     }
 }

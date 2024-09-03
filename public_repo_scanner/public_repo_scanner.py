@@ -13,26 +13,20 @@ def get_latest_record(data):
 
 def get_latest_release(url):
     """Fetch the latest release version from a GitHub releases page or API endpoint."""
-    if "github.com" in url and "releases/latest" in url:
-        url = url.replace("github.com", "api.github.com/repos").replace("/releases/latest", "/releases/latest")
-
     try:
         response = requests.get(url)
         response.raise_for_status()
         try:
-            releases = response.json()
+            release_data = response.json()
         except ValueError as e:
             app.logger.error(f"Failed to parse JSON from {url}: {e}")
             return 'Error parsing data'
 
-        app.logger.info(f"Response from {url}: {releases}")
+        app.logger.info(f"Response from {url}: {release_data}")
 
-        if isinstance(releases, dict) and 'tag_name' in releases:
-            return releases['tag_name']
-
-        elif isinstance(releases, list) and len(releases) > 0:
-            latest_release = max(releases, key=lambda x: x.get('created_at', ''))
-            return latest_release.get('tag_name', 'No version found')
+        # Extract version name from the response
+        if isinstance(release_data, dict) and 'name' in release_data:
+            return release_data['name']
 
         return 'No version found'
 
