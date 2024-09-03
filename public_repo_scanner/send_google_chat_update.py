@@ -1,86 +1,40 @@
 import requests
 import json
 
-WEBHOOK_URL = 'https://chat.googleapis.com/v1/spaces/AAA.../messages?key=...&token=...'
-
-def fetch_merged_data():
-    """Fetches merged data from the API."""
+def send_to_google_chat(webhook_url, api_url):
     try:
-        response = requests.get('http://localhost:5001/api/merged')
-        response.raise_for_status()  # Ensure we raise an error for bad responses
-
-        # Parse the response as JSON
+        # Fetch data from the API
+        response = requests.get(api_url)
+        response.raise_for_status()  # Raise an exception for HTTP errors
         data = response.json()
 
-        # Debugging: Print the structure of the data
-        print(f"API response data structure: {json.dumps(data, indent=2)}")
-        print(f"Data type: {type(data)}")
+        if not isinstance(data, dict):
+            raise ValueError(f"Unexpected data format from API, expected dict, got {type(data)}")
 
-        return data
-
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching merged data: {e}")
-        return None
-    except json.JSONDecodeError as e:
-        print(f"Error decoding JSON: {e}")
-        return None
-
-def format_message(data):
-    """Formats the Google Chat message based on merged data."""
-    message = "*Dependency Update*\n\n"
-
-    for idx, item in enumerate(data):
-        print(f"Processing item {idx}: {item}")  # Debugging output to show each item
-
-        if isinstance(item, dict):  # Ensure item is a dictionary
-            name = item.get("name", "Unknown")
-            version = item.get("version", "")
-            cycle = item.get("cycle", "")
-
-            # Clean up the version and cycle data
-            version_output = version.lstrip('v') if version else ""
-            cycle_output = f"({cycle})" if cycle and cycle.isdigit() else ""
-
-            # Combine version and cycle
-            formatted_output = f"{version_output} {cycle_output}".strip()
-
-            if formatted_output:
-                message += f"*{name}*: {formatted_output}\n"
+        # Build the message for Google Chat
+        cards = []
+        for service, service_data in data.items():
+            if isinstance(service_data, dict):
+                version = service_data.get('version', 'N/A')
+                cycle = service_data.get('cycle', 'N/A')
+                message = f"*Service*: {service}\n*Version*: {version}\n*Cycle*: {cycle}"
+                cards.append({"header": {"title": f"{service} - Latest Release"}, "sections": [{"widgets": [{"textParagraph": {"text": message}}]}]})
             else:
-                message += f"*{name}*: No data available\n"
-        else:
-            print(f"Unexpected data format at item {idx}: {item} (type: {type(item)})")
-            message += f"Error: Unexpected data format at item {idx}\n"
+                message = f"*Service*: {service}\n*Data*: {service_data}"
+                cards.append({"header": {"title": f"{service} - Data"}, "sections": [{"widgets": [{"textParagraph": {"text": message}}]}]})
 
-    return {
-        "text": message
-    }
+        # Send the message to Google Chat
+        chat_message = {"cards": cards}
+        headers = {'Content-Type': 'application/json'}
+        chat_response = requests.post(webhook_url, data=json.dumps(chat_message), headers=headers)
 
-def send_message_to_google_chat(message):
-    """Sends a formatted message to Google Chat via webhook."""
-    headers = {
-        'Content-Type': 'application/json; charset=UTF-8'
-    }
-    try:
-        response = requests.post(WEBHOOK_URL, headers=headers, data=json.dumps(message))
-        response.raise_for_status()  # Ensure we raise an error for bad responses
-        print("Message sent successfully.")
-    except requests.exceptions.RequestException as e:
-        print(f"Error sending message to Google Chat: {e}")
+        if chat_response.status_code != 200:
+            raise Exception(f"Failed to send message to Google Chat, status code: {chat_response.status_code}")
 
-def main():
-    """Main function to fetch merged data and send the Google Chat message."""
-    merged_data = fetch_merged_data()
-    if merged_data:
-        if isinstance(merged_data, list):  # Ensure the fetched data is a list
-            formatted_message = format_message(merged_data)
-            send_message_to_google_chat(formatted_message)
-        else:
-            print("Unexpected data format from API, expected a list.")
-            print(f"Actual data type: {type(merged_data)}")  # Print the actual data type
-            print(f"Actual data: {merged_data}")  # Print the actual data returned by the API
-    else:
-        print("Failed to retrieve merged data.")
+    except Exception as e:
+        print(f"Error: {e}")
 
-if __name__ == "__main__":
-    main()
+# Example usage:
+webhook_url = "YOUR_WEBHOOK_URL"
+api_url = "http://localhost:5001/api/merged"
+send_to_google_chat(webhook_url, api_url)
