@@ -8,7 +8,19 @@ def fetch_merged_data():
     try:
         response = requests.get('http://localhost:5001/api/merged')
         response.raise_for_status()  # Ensure we raise an error for bad responses
-        return response.json()  # Parse the response as JSON
+
+        # Debugging: Print the response content
+        print(f"API response content: {response.content}")
+
+        # Parse the response as JSON
+        data = response.json()
+
+        # Debugging: Print the parsed JSON data and its type
+        print(f"Parsed JSON data: {data}")
+        print(f"Data type: {type(data)}")
+
+        return data
+
     except requests.exceptions.RequestException as e:
         print(f"Error fetching merged data: {e}")
         return None
@@ -65,6 +77,8 @@ def main():
             send_message_to_google_chat(formatted_message)
         else:
             print("Unexpected data format from API, expected a list.")
+            print(f"Actual data type: {type(merged_data)}")  # Print the actual data type
+            print(f"Actual data: {merged_data}")  # Print the actual data returned by the API
     else:
         print("Failed to retrieve merged data.")
 
