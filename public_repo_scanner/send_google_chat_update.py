@@ -17,7 +17,9 @@ def format_message(data):
     """Formats the Google Chat message based on merged data."""
     message = "*Dependency Update*\n\n"
 
-    for item in data:
+    for idx, item in enumerate(data):
+        print(f"Processing item {idx}: {item}")  # Debugging output to show each item
+
         if isinstance(item, dict):  # Ensure item is a dictionary
             name = item.get("name", "Unknown")
             version = item.get("version", "")
@@ -35,7 +37,8 @@ def format_message(data):
             else:
                 message += f"*{name}*: No data available\n"
         else:
-            print(f"Unexpected data format: {item}")
+            print(f"Unexpected data format at item {idx}: {item} (type: {type(item)})")
+            message += f"Error: Unexpected data format at item {idx}\n"
 
     return {
         "text": message
@@ -61,7 +64,7 @@ def main():
             formatted_message = format_message(merged_data)
             send_message_to_google_chat(formatted_message)
         else:
-            print("Unexpected data format from API.")
+            print("Unexpected data format from API, expected a list.")
     else:
         print("Failed to retrieve merged data.")
 
