@@ -9,20 +9,20 @@ def fetch_merged_data():
         response = requests.get('http://localhost:5001/api/merged')
         response.raise_for_status()  # Ensure we raise an error for bad responses
 
-        # Debugging: Print the response content
-        print(f"API response content: {response.content}")
-
         # Parse the response as JSON
         data = response.json()
 
-        # Debugging: Print the parsed JSON data and its type
-        print(f"Parsed JSON data: {data}")
+        # Debugging: Print the structure of the data
+        print(f"API response data structure: {json.dumps(data, indent=2)}")
         print(f"Data type: {type(data)}")
 
         return data
 
     except requests.exceptions.RequestException as e:
         print(f"Error fetching merged data: {e}")
+        return None
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
         return None
 
 def format_message(data):
