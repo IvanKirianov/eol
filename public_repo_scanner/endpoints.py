@@ -42,9 +42,5 @@ ENDPOINTS = {
     "terraform": {
         "url": "https://endoflife.date/api/terraform.json",
         "description": "Terraform"
-    },
-    "terraform-cloud-agent": {
-        "url": "https://releases.hashicorp.com/tfc-agent",
-        "description": "Terraform Cloud Agent"
     }
 }
